@@ -43,7 +43,7 @@ export async function parseDirectory(
       continue;
     }
 
-    // absolutePath is the full file-system path (so we can read files), current dir + file name
+    // absolutePath is the full file-system path (so we can read files), current dir + entry name
     const absolutePath = path.resolve(dir, entry.name);
 
     // relativePath is how we’ll refer to this node inside our app (path without root)
