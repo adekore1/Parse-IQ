@@ -1,3 +1,4 @@
+// src/components/FileExplorer.tsx
 'use client'
 import { useEffect, useState } from 'react';
 import type { FileNode } from '@/lib/parser';

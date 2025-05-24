@@ -1,3 +1,4 @@
+// scripts/check-parser.ts
 import { parseDirectory } from '../src/lib/parser';
 import path from 'path';
 
