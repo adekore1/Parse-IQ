@@ -5,7 +5,7 @@ import path from 'path';
 // define ignored filetypes
 const IGNORE = new Set([
   '.git',
-  '.node_modules',
+  'node_modules',
   '.next',
   '.vercel'
 ]);

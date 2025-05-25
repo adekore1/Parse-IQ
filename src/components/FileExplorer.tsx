@@ -2,6 +2,7 @@
 'use client'
 import { useEffect, useState } from 'react';
 import type { FileNode } from '@/lib/parser';
+import SummaryCard from './SummaryCard';
 
 export default function FileExplorer(){
     const [tree, setTree] = useState<FileNode[]>([]);
@@ -46,11 +47,12 @@ export default function FileExplorer(){
             {tree.length ? renderTree(tree) : 'Loading…'}
             </aside>
             <main className="flex-1 p-4 overflow-auto">
-            {selected 
-                ? <pre className="whitespace-pre-wrap bg-gray-100 p-4 rounded">
-                    {selected.content}
-                </pre>
-                : 'Select a file to view its contents'}
+            {selected?(
+                  <>
+                    <h2 className="text-xl font-semibold mb-2">{selected.name}</h2>
+                    <SummaryCard path={selected.path} />
+                  </>
+                ): 'Select a file to view its summary'}
             </main>
         </div>
         );

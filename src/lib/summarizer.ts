@@ -1,71 +1,45 @@
 // src/lib/summarizer.ts
 
-import * as ts from 'typescript';
-const summary = require('node-summary');
-const cache = new Map<string , string>();
+import OpenAI from 'openai';
 
-function codeSignatureSummary(text:string): string | null{
-    const sf = ts.createSourceFile('x.ts', text, ts.ScriptTarget.Latest, true);
+// const ai = new OpenAI({apiKey: process.env.OPENAI_API_KEY! });
 
-    for(const stmt of sf.statements) {
-        if(ts.isFunctionDeclaration(stmt) && stmt.name) {
-            const name = stmt.name.text;
-            const params = stmt.parameters.map(p => p.name.getText()).join(', ');
-            return `Function ${name}(${params})`;
-        }
-
-        if (ts.isClassDeclaration(stmt) && stmt.name) {
-            const methods = stmt.members
-                .filter(ts.isMethodDeclaration)
-                .map(m => (m.name as ts.Identifier).text + '(' +
-                            ((m.parameters || []).map(p => p.name.getText()).join(', ')) +
-                        ')');
-            return `Class ${stmt.name.text} with methods: ${methods.join(', ')}`;
-        }
-
-        if (ts.isVariableStatement(stmt) && stmt.modifiers?.some(m => m.kind === ts.SyntaxKind.ExportKeyword)) {
-            for (const decl of stmt.declarationList.declarations) {
-                if (
-                ts.isIdentifier(decl.name) &&
-                decl.initializer && ts.isArrowFunction(decl.initializer)
-                ) {
-                const name = decl.name.text;
-                const params = decl.initializer.parameters.map(p => p.name.getText()).join(', ');
-                return `Function ${name}(${params})`;
-                }
-            }
-        }
-
-    }
-    return null;
-}
-
-
+const cache = new Map<string, string>();
 /**
-* Summarize a block of text extractively.
-* @param key  Unique cache key (e.g. file path)
-* @param text Raw code or concatenated summaries
-* @returns abbreviated summary
-*/
+ * Summarize arbitrary code/text via OpenAI.
+ * @param key  Unique cache key (usually the file path)
+ * @param text The full text of the file
+ */
+
 
 export async function summarizeText(key: string, text: string): Promise<string> {
-  if (cache.has(key)) return cache.get(key)!;
+  if(cache.has(key)) return cache.get(key)!
 
-  // 1) AST-based summary
-  const sig = codeSignatureSummary(text);
-  if (sig) {
-    cache.set(key, sig);
-    return sig;
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    throw new Error('Missing OPENAI_API_KEY in your environment');
   }
 
-  // 2) extractive fallback
-  const out = await new Promise<string>((resolve, reject) => {
-    summary.summarize('doc', text, (err: Error | null, s: string) => {
-      if (err) reject(err);
-      else resolve(s);
-    });
-  });
+  // instantiate here, so env vars are already loaded
+  const ai = new OpenAI({ apiKey });
 
-  cache.set(key, out);
-  return out
+  const response = await ai.chat.completions.create({
+    model: 'gpt-4o-mini',
+    messages: [
+      {role: 'system', content: 'You are an expert code summarizer, explain what each function does, and specify what function does what, including function names and usability.'},
+      {role: 'user', content: `Summarize this code in plain English:\n\n${text}`},
+    ],
+    temperature: 0.2,
+  })
+
+   // 1) Pull out the content
+  const content = response.choices[0].message.content;
+  if (!content) {
+    throw new Error('OpenAI returned no summary');
+  }
+
+  // 2) Trim and cache
+  const summary = content.trim();
+  cache.set(key, summary);
+  return summary;
 }
