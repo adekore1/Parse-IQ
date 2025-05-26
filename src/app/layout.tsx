@@ -14,8 +14,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="flex flex-col min-h-screen">
+    <html lang="en" className="h-full">
+      <body className="flex flex-col h-full">
         <header className="bg-gray-800 text-white p-4 flex space-x-4">
           <Link href="/" className="hover:underline">Explorer</Link>
           <Link href="/docs" className="hover:underline">Docs</Link>

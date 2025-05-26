@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import type { FileNode } from '@/lib/parser';
 import SummaryCard from './SummaryCard';
+import ChatBox from './ChatBox'
+
 
 export default function FileExplorer(){
     const [tree, setTree] = useState<FileNode[]>([]);
@@ -46,11 +48,14 @@ export default function FileExplorer(){
             <aside className="w-1/3 border-r p-4 overflow-auto">
             {tree.length ? renderTree(tree) : 'Loading…'}
             </aside>
-            <main className="flex-1 p-4 overflow-auto">
+            <main className="flex-1 p-4 overflow-auto flex flex-col">
             {selected?(
                   <>
                     <h2 className="text-xl font-semibold mb-2">{selected.name}</h2>
                     <SummaryCard path={selected.path} />
+                    <div className="mt-4 flex-1">
+                        <ChatBox path={selected.path} />
+                    </div>
                   </>
                 ): 'Select a file to view its summary'}
             </main>
