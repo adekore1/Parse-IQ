@@ -1,3 +1,4 @@
+// src/app/api/ask
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import fs from 'fs/promises'
@@ -21,19 +22,25 @@ export async function POST(request: NextRequest){
         }
 
         const response = await ai.chat.completions.create({
-                model: 'gpt-4o-mini',
-                messages: [
-                  {role: 'system', content: 'You are a helpful code assistant, when you are asked questions, when you are asked questions, you give clear answers in bullet points, Your points are user friendly and easy to understand, you dont use too many special symbols which may be difficult for the human eye.'},
-                  {role: 'user', content: `code:\n\n${context}`},
-                  {role: 'user', content: `Question:\n\n${question}`}
-                ],
-                temperature: 0.2,
-              })
-              const answer = response.choices[0].message.content?.trim() ?? ''
-                return NextResponse.json({ answer })
-        } catch (err: any) {
-                console.error('Error in /api/ask:', err)
-                return NextResponse.json({ error: err.message }, { status: 500 })
+              model: 'gpt-4o-mini',
+              messages: [
+                {role: 'system', content: [
+                                          'You are a helpful code assistant.',
+                                          'Answer in ::Markdown:: only.',
+                                          'Structure your reply as: ',
+                                          '- A new paragraph for the part of the reply',
+                                          '- A new paragraph and Bullet points (`- `) for each key answer item.',
+                                          'Do not include any plain‐text apology or extra commentary.'
+                                        ].join(' ')},
+                {role: 'user', content: `code:\n\n${context}`},
+                {role: 'user', content: `Question:\n\n${question}`}
+              ],
+              temperature: 0.2,
+            })
+            const answer = response.choices[0].message.content?.trim() ?? ''
+              return NextResponse.json({ answer })
+          } catch (err: any) {
+              console.error('Error in /api/ask:', err)
+              return NextResponse.json({ error: err.message }, { status: 500 })
         }
-
 }

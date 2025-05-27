@@ -26,7 +26,16 @@ export async function summarizeText(key: string, text: string): Promise<string> 
   const response = await ai.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [
-      {role: 'system', content: 'You are an expert code summarizer, explain what each function does, and specify what function does what, including function names and usability.'},
+      {role: 'system', content: [
+    'You are an expert code summarizer.',
+    'When summarizing a file, output valid ::Markdown:: only.',
+    'Use one `>>>` heading per function or class,',
+    'then under each heading list 2–4 bullet points (`- `) for:',
+    '- purpose of the function/class',
+    '- parameters and their types',
+    '- return value or side effects',
+    'Do not include anything else.'
+  ].join(' ')},
       {role: 'user', content: `Summarize this code in plain English:\n\n${text}`},
     ],
     temperature: 0.2,

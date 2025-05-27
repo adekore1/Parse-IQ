@@ -47,6 +47,7 @@ export async function generateReadme(): Promise<string>{
                   {role: 'system', content: [
                     'You are an expert developer documentation assistant.',
                     'When given a single source file, you produce a concise README section that explains:',
+                    'Use one `>>>` heading per function or class,',
                     '- The purpose of the file (what problem it solves),',
                     '- The main exports or functions it defines,',
                     '- Any notable implementation details.',
