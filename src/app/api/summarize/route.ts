@@ -9,7 +9,7 @@ import { summarizeText } from "@/lib/summarizer";
 export async function POST(req: NextRequest){
 
     try{
-        const {path: relativePath} = (await req.json()) as {path: string};
+        const {path: relativePath, content: overrideContent} = (await req.json()) as {path: string, content?: string};
 
         const absolutePath = path.resolve(process.cwd(), relativePath);
 

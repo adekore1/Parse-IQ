@@ -2,10 +2,12 @@
 
 import { Assistant } from 'openai/resources/beta/assistants.mjs'
 import { useState, useRef, useEffect } from 'react'
+import ReactMarkdown from 'react-markdown'
 
+interface ChatCardProps{ path?:string , content? : string}
 type Message = {sender: 'user' | 'assistant'; text: string}
 
-export default function ChatBox({path}: {path?: string}) {
+export default function ChatBox({path, content}: ChatCardProps) {
      const [messages, setMessages] = useState<Message[]>([])
   const [loading, setLoading]   = useState(false)
   const [error, setError]   = useState<string | null>(null)
@@ -67,7 +69,9 @@ export default function ChatBox({path}: {path?: string}) {
                 ' px-3 py-2 rounded'
               }
             >
+              <ReactMarkdown>
               {m.text}
+              </ReactMarkdown>
             </div>
           </div>
         ))}
