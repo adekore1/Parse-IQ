@@ -6,6 +6,7 @@ import { parse } from 'path'
 interface UseRepoTreeOpts {
   /** if true, on mount fetch from /api/tree; otherwise start empty */
   server?: boolean
+  repoUrl?: string
 }
 
 const IGNORE = new Set([
@@ -24,7 +25,7 @@ const ALLOWED = new Set([
   '.html'
 ]);
 
-export function useRepoTree({server = false}: UseRepoTreeOpts={}){
+export function useRepoTree({server = false, repoUrl}: UseRepoTreeOpts={}){
     const [tree,setTree] = useState<FileNode[]>([])
     const [loading,setLoading] = useState(false)
     const [error,setError] = useState<string | null>(null)
@@ -44,6 +45,29 @@ export function useRepoTree({server = false}: UseRepoTreeOpts={}){
             setLoading(false)
         }
     }, [])
+
+    const loadFromURL = useCallback( async(url: string )=>{
+        setError(null)
+        setLoading(true)
+
+        try{
+            const res = await fetch('/api/github', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url }),
+            })
+            if (!res.ok) {
+                const body = await res.json().catch(() => ({}))
+                throw new Error(body.error || res.statusText)
+            }
+            const data: FileNode[] = await res.json()
+            setTree(data)
+        }catch (e: any) {
+            setError(e.message)
+        } finally {
+            setLoading(false)
+        }
+    },[])
 
     const loadFromFiles = useCallback( async (files: FileList) => {
         setError(null)
@@ -102,11 +126,19 @@ export function useRepoTree({server = false}: UseRepoTreeOpts={}){
         }
     }, [])
 
+    useEffect(() => {
+    if (server) {
+      if (repoUrl) loadFromURL(repoUrl)
+      else         loadFromServer()
+    }
+  }, [server, repoUrl, loadFromURL, loadFromServer])
+
     return {
         tree,
         loading,
         error,
         loadFromFiles,
+        loadFromURL,
         loadFromServer,
         setTree,
     }

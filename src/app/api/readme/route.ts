@@ -17,11 +17,11 @@ export async function GET(req: NextRequest){
 
     return NextResponse.json({ markdown })
   } catch (err: any) {
-    console.error('Error in /api/readme GET:', err)
-    return NextResponse.json(
-      { error: 'Failed to generate README' },
-      { status: 500 }
-    )
+      console.error('Error in /api/readme GET:', err)
+      return NextResponse.json(
+        { error: 'Failed to generate README' },
+        { status: 500 }
+      )
     }
 }
 

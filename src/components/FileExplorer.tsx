@@ -9,8 +9,9 @@ import ChatBox from './ChatBox'
 
 
 export default function FileExplorer(){
-    const { tree, loading, error, loadFromFiles } = useRepoTree({ server: false })
-
+    const [repoUrl, setRepoUrl] = useState('')
+    const { tree, loading, error, loadFromFiles, loadFromURL,} = useRepoTree({ server: !!repoUrl, repoUrl })
+     
     const [selected, setSelected] = useState<FileNode | null>(null);
     // It can either hold a single FileNode (the file the user last clicked) or null (no selection).
     // We start at null because no file is chosen when the component first appears.

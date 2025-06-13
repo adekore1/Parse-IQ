@@ -35,11 +35,11 @@ export async function summarizeText(key: string, text: string): Promise<string> 
     '- parameters and their types',
     '- return value or side effects',
     'Do not include anything else.'
-  ].join(' ')},
-      {role: 'user', content: `Summarize this code in plain English:\n\n${text}`},
-    ],
-    temperature: 0.2,
-  })
+    ].join(' ')},
+        {role: 'user', content: `Summarize this code in plain English:\n\n${text}`},
+      ],
+      temperature: 0.2,
+    })
 
    // 1) Pull out the content
   const content = response.choices[0].message.content;
