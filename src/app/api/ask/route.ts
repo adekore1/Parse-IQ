@@ -1,4 +1,4 @@
-// src/app/api/ask
+// src/app/api/ask/route.ts
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import fs from 'fs/promises'
@@ -9,13 +9,24 @@ const ai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! })
 
 export async function POST(request: NextRequest){
     try{
-        const {path: relativePath, question} = (await request.json()) as {
+        const {path: relativePath,content, question} = (await request.json()) as {
             path?: string
+            content?: string
             question: string
         }
 
+        if (!question) {
+          return NextResponse.json(
+            { error: 'Question is required' },
+            { status: 400 }
+          )
+        }
+
         let context = ''
-        if(relativePath){
+        if (typeof content === 'string') {
+          context = content
+        }
+        else if(relativePath){
             const absolutePath = path.resolve(process.cwd(), relativePath)
             const content = await fs.readFile(absolutePath, 'utf-8')
             context = content

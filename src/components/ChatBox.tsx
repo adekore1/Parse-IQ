@@ -1,3 +1,4 @@
+// src/components/ChatBox.tsx
 'use client'
 
 import { Assistant } from 'openai/resources/beta/assistants.mjs'
@@ -31,7 +32,7 @@ export default function ChatBox({path, content}: ChatCardProps) {
     const response = await fetch('/api/ask', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({path, question: usermessage}),
+        body: JSON.stringify({content, question: usermessage}),
     })
 
     const data = await response.json()

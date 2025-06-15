@@ -19,6 +19,7 @@ export default function RootLayout({
         <header className="bg-gray-800 text-white p-4 flex space-x-4">
           <Link href="/" className="hover:underline">Explorer</Link>
           <Link href="/docs" className="hover:underline">Docs</Link>
+          <Link href="/chat" className="hover:underline">Chat</Link>
         </header>
         <div className="flex-1 overflow-auto">
           {children}
