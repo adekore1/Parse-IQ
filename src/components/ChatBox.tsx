@@ -5,11 +5,16 @@ import { Assistant } from 'openai/resources/beta/assistants.mjs'
 import { useState, useRef, useEffect } from 'react'
 import ReactMarkdown from 'react-markdown'
 
-interface ChatCardProps{ path?:string , content? : string}
+interface ChatCardProps{ 
+  path?:string , 
+  content? : string,
+  messages: Message[];
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+}
 type Message = {sender: 'user' | 'assistant'; text: string}
 
-export default function ChatBox({path, content}: ChatCardProps) {
-     const [messages, setMessages] = useState<Message[]>([])
+export default function ChatBox({path, content, messages, setMessages}: ChatCardProps) {
+    //  const [messages, setMessages] = useState<Message[]>([])
   const [loading, setLoading]   = useState(false)
   const [error, setError]   = useState<string | null>(null)
   const [input, setInput]   = useState('')
@@ -32,7 +37,7 @@ export default function ChatBox({path, content}: ChatCardProps) {
     const response = await fetch('/api/ask', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({content, question: usermessage}),
+        body: JSON.stringify({content,path, question: usermessage}),
     })
 
     const data = await response.json()

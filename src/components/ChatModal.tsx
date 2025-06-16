@@ -4,16 +4,17 @@ import ChatBox from './ChatBox';
 
 export type Message = {sender:'user'|'assistant'; text:string;}
 
-export default function ChatModal({ path, content, onClose, visible, messages,  }: {
+export default function ChatModal({ path, content, onClose, visible, messages, setMessages }: {
   path: string;
   content?: string;
   onClose: () => void;
   visible: boolean;
   messages:Message[];
-  setMessages: (msgs: Message[]) => void;
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
 }) {
-    
+      if (!visible) return null;
   return (
+    
     <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
       <div className="fixed bottom-5 right-5 w-full max-w-2xl z-60">
         <div className="bg-white dark:bg-zinc-900 w-full max-w-2xl rounded-lg shadow-xl overflow-hidden">
@@ -25,7 +26,11 @@ export default function ChatModal({ path, content, onClose, visible, messages,  
             </div>
 
             <div className="p-4 max-h-[75vh] overflow-y-auto">
-            <ChatBox path={path} content={content} />
+            <ChatBox 
+            path={path} 
+            content={content}
+            messages={messages}
+            setMessages={setMessages} />
             </div>
         </div>
       </div>
