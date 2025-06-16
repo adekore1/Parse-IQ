@@ -13,7 +13,11 @@ export async function POST(req: NextRequest){
 
         const absolutePath = path.resolve(process.cwd(), relativePath);
 
-        const content = await fs.readFile(absolutePath, 'utf-8');
+        // const content = await fs.readFile(absolutePath, 'utf-8');
+        const content = overrideContent ?? await fs.readFile(
+        path.resolve(process.cwd(), relativePath),
+        'utf-8'
+        );
 
         const summary = await summarizeText(relativePath, content);
 

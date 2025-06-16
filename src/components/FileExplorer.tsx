@@ -37,7 +37,7 @@ export default function FileExplorer(){
     
 
     return (
-      <div className="flex h-full">
+      <div className="flex h-screen overflow-hidden">
         <aside className="w-1/3 border-r p-4 flex flex-col">
           {/* 1) Drop-zone + hidden input */}
           <div
@@ -74,17 +74,24 @@ export default function FileExplorer(){
         </aside>
 
         {/* 3) Main pane: summary + chat */}
-        <main className="flex-1 p-4 overflow-auto flex flex-col">
+        <main className="flex-1 min-h-0 flex flex-col space-y-2 overflow-auto">
           {selected ? (
             <>
-              <h2 className="text-xl font-semibold mb-2">{selected.name}</h2>
-              <SummaryCard path={selected.path} content={selected.content} />
-              <div className="mt-4 flex-1">
-                <ChatBox path={selected.path} content={selected.content} />
-              </div>
+               {/* Header */}
+                <h2 className="text-xl font-semibold px-4">{selected.name}</h2>
+
+                {/* Scrollable Summary area */}
+                <div className="flex-1 min-h-0 overflow-y-auto px-4">
+                  <SummaryCard path={selected.path} content={selected.content} />
+                </div>
+
+                {/* Fixed Chat at bottom */}
+                <div className="h-55 shrink-0 px-4">
+                  <ChatBox path={selected.path} content={selected.content} />
+                </div>
             </>
           ) : (
-            <p className="text-gray-500">Select a file to view its summary</p>
+            <p className="text-gray-500 p-4">Select a file to view its summary</p>
           )}
         </main>
       </div>

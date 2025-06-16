@@ -51,16 +51,13 @@ export default function ChatBox({path, content}: ChatCardProps) {
 
 
   return (
-    <div className="flex flex-col h-full border rounded p-4 bg-white">
-      <div className="flex-1 overflow-auto space-y-3 mb-4">
+    <div className="flex flex-col max-h-80 border rounded bg-white">
+      {/* Chat messages (scrollable) */}
+      <div className="flex-1 overflow-y-auto p-3 space-y-2">
         {messages.map((m, i) => (
           <div
             key={i}
-            className={
-              m.sender === 'user'
-                ? 'text-right'
-                : 'text-left'
-            }
+            className={m.sender === 'user'? 'text-right': 'text-left'}
           >
             <div
               className={
@@ -71,7 +68,7 @@ export default function ChatBox({path, content}: ChatCardProps) {
               }
             >
               <ReactMarkdown>
-              {m.text}
+                {m.text}
               </ReactMarkdown>
             </div>
           </div>
@@ -79,11 +76,13 @@ export default function ChatBox({path, content}: ChatCardProps) {
         <div ref={endRef} />
       </div>
 
+      {/* Error message (optional) */}
       {error && (
-        <p className="text-red-500 text-sm mb-2">Error: {error}</p>
+        <p className="text-red-500 text-sm px-4 pb-1">Error: {error}</p>
       )}
 
-      <div className="flex space-x-2">
+      {/* Input area (fixed at bottom) */}
+      <div className="flex p-4 border-t space-x-2">
         <textarea
           className="flex-1 border rounded p-2 resize-none"
           rows={2}

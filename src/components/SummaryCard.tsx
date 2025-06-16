@@ -45,58 +45,62 @@ export default function SummaryCard({ path, content }: SummaryCardProps) {
   if (loading) return <p>Loading summary…</p>;
   if (error) return <p className="text-red-500">Error: {error}</p>;
   return (
-    <div className="prose dark:prose-invert bg-gray-50 p-4 rounded">
+    <div className="bg-gray-50 p-4 rounded flex flex-col h-full">
       <h4 className="font-semibold">📄 Summary:</h4>
 
-      {<ReactMarkdown>{md}</ReactMarkdown>}
+      <div className="overflow-auto grow border p-2 rounded bg-white">
+        <ReactMarkdown>{md}</ReactMarkdown>
+      </div>
 
-      <button
-        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        onClick={() => {
-          const blob = new Blob([md], { type: "text/markdown" });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          const filename = path.replace(/\//g, "_") + ".md";
-          a.download = filename;
-          a.click();
-          setTimeout(() => URL.revokeObjectURL(url), 1000);
-        }}
-      >
-        Download Summary as .Md
-      </button>
+      <div className="flex gap-2 mt-4 ">
+        <button
+          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          onClick={() => {
+            const blob = new Blob([md], { type: "text/markdown" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            const filename = path.replace(/\//g, "_") + ".md";
+            a.download = filename;
+            a.click();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+          }}
+        >
+          Download Summary as .Md
+        </button>
 
-      <button
-        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        onClick={() => {
-          // 1) Instantiate a PDF doc
-          const doc = new jsPDF({
-            unit: "pt",
-            format: "letter",
-          });
+        <button
+          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          onClick={() => {
+            // 1) Instantiate a PDF doc
+            const doc = new jsPDF({
+              unit: "pt",
+              format: "letter",
+            });
 
-          // 2) Split your Markdown into lines (or strip markdown syntax first)
-          const lines = md.split("\n");
-          let y = 40; // start a bit down from top
-          doc.setFontSize(12);
+            // 2) Split your Markdown into lines (or strip markdown syntax first)
+            const lines = md.split("\n");
+            let y = 40; // start a bit down from top
+            doc.setFontSize(12);
 
-          for (const line of lines) {
-            doc.text(line, 40, y);
-            y += 16;
-            if (y > 800) {
-              // simple page-break logic
-              doc.addPage();
-              y = 40;
+            for (const line of lines) {
+              doc.text(line, 40, y);
+              y += 16;
+              if (y > 800) {
+                // simple page-break logic
+                doc.addPage();
+                y = 40;
+              }
             }
-          }
 
-          // 3) Save the PDF
-          const filename = path.replace(/\//g, "_") + ".pdf";
-          doc.save(filename);
-        }}
-      >
-        Download Summary as PDF
-      </button>
+            // 3) Save the PDF
+            const filename = path.replace(/\//g, "_") + ".pdf";
+            doc.save(filename);
+          }}
+        >
+          Download Summary as PDF
+        </button>
+      </div>
     </div>
   );
 }
