@@ -21,7 +21,7 @@ export default function RootLayout({
           <Link href="/docs" className="hover:underline">Docs</Link>
           <Link href="/chat" className="hover:underline">Chat</Link>
         </header>
-        <div className="flex-1 overflow-hidden">
+        <div className="h-full flex-1 overflow-hidden">
           {children}
         </div>
       </body>

@@ -5,13 +5,14 @@ import type { FileNode } from '@/lib/parser';
 import { useRepoTree } from '@/hooks/useRepoTree'
 import SummaryCard from './SummaryCard';
 import ChatBox from './ChatBox'
-
-
+import ChatModal from './ChatModal';
+import { Message } from './ChatModal';
 
 export default function FileExplorer(){
     const [repoUrl, setRepoUrl] = useState('')
     const { tree, loading, error, loadFromFiles, loadFromURL,} = useRepoTree({ server: !!repoUrl, repoUrl })
-     
+    const [showChat, setShowChat] = useState(false);
+    const [chatMessages, setChatMessages] = useState<Message[]>([]);
     const [selected, setSelected] = useState<FileNode | null>(null);
     // It can either hold a single FileNode (the file the user last clicked) or null (no selection).
     // We start at null because no file is chosen when the component first appears.
@@ -81,19 +82,33 @@ export default function FileExplorer(){
                 <h2 className="text-xl font-semibold px-4">{selected.name}</h2>
 
                 {/* Scrollable Summary area */}
-                <div className="flex-1 min-h-0 overflow-y-auto px-4">
-                  <SummaryCard path={selected.path} content={selected.content} />
-                </div>
-
-                {/* Fixed Chat at bottom */}
-                <div className="h-55 shrink-0 px-4">
-                  <ChatBox path={selected.path} content={selected.content} />
+                <div className="flex-1 min-h-0 overflow-y-auto px-4 pb-4">
+                  <div className="h-full">
+                    <SummaryCard path={selected.path} content={selected.content} />
+                  </div>
                 </div>
             </>
           ) : (
             <p className="text-gray-500 p-4">Select a file to view its summary</p>
           )}
         </main>
+          {/* Fixed Chat at bottom */}
+          <button
+            className="fixed bottom-6 right-6 px-4 py-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 z-50"
+            onClick={() => setShowChat(true)}
+          >
+            💬 Open Chat
+          </button>
+          {showChat && selected &&(
+            <ChatModal
+              path={selected.path || ''}
+              content={selected?.content}
+              onClose={() => setShowChat(false)}
+              visible={showChat}
+              messages = {chatMessages}
+              setMessages = {setChatMessages}
+            />
+          )}
       </div>
     );
 }

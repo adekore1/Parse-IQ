@@ -48,7 +48,7 @@ export default function SummaryCard({ path, content }: SummaryCardProps) {
     <div className="bg-gray-50 p-4 rounded flex flex-col h-full">
       <h4 className="font-semibold">📄 Summary:</h4>
 
-      <div className="overflow-auto grow border p-2 rounded bg-white">
+      <div className="flex-1 overflow-y-auto border p-2 rounded bg-white mb-4 max-h-[70vh]">
         <ReactMarkdown>{md}</ReactMarkdown>
       </div>
 
