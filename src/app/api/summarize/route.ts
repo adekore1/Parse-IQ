@@ -4,7 +4,8 @@ import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import fs from 'fs/promises'
 import path from "path";
-import { summarizeText } from "@/lib/summarizer";
+import { summarizeText  } from "@/lib/summarizer";
+// import { extractReadableContent  } from "@/lib/summarizer";
 
 export async function POST(req: NextRequest){
 

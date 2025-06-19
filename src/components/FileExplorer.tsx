@@ -21,7 +21,7 @@ export default function FileExplorer(){
     const fileInputRef = useRef<HTMLInputElement>(null)
 
     const renderTree = (nodes: FileNode[]) => (
-        <ul className="pl-4">
+        <ul className="pl-4 space-y-1">
             {nodes.map(n => (
             <li key={n.path}>
                 <button
@@ -39,7 +39,7 @@ export default function FileExplorer(){
 
     return (
       <div className="flex h-screen overflow-hidden">
-        <aside className="w-1/3 border-r p-4 flex flex-col">
+        <aside className="w-1/3 border-r p-4 pb-25 flex flex-col overflow-y-auto max-h-[calc(100vh-64px)]">
           {/* 1) Drop-zone + hidden input */}
           <div
             className="mb-4 p-6 border-2 border-dashed text-center cursor-pointer"

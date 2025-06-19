@@ -2,20 +2,71 @@
 import fs from 'fs/promises';
 import path from 'path';
 
+
 // define ignored filetypes
 const IGNORE = new Set([
   '.git',
   'node_modules',
   '.next',
-  '.vercel'
+  '.vercel',
+]);
+
+const IGNORED_FILES = new Set([
+  'package-lock.json'
 ]);
 
 // define allowed filetypes
 const ALLOWED = new Set([
-  '.tsx','.ts',
-  '.jsx', '.js',
-  '.json', '.md'
+  // TypeScript / JavaScript
+  '.ts', '.tsx', '.js', '.jsx',
+
+  // Python
+  '.py',
+
+  // Java
+  '.java',
+
+  // C-family
+  '.c', '.cpp', '.h', '.hpp', '.cs',
+
+  // Go
+  '.go',
+
+  // Rust
+  '.rs',
+
+  // Ruby
+  '.rb',
+
+  // PHP
+  '.php',
+
+  // Kotlin
+  '.kt', '.kts',
+
+  // Swift
+  '.swift',
+
+  // Dart / Flutter
+  '.dart',
+
+  // Shell scripts
+  '.sh', '.bash', '.zsh',
+
+  // Documentation / Markup
+  '.md', '.rst', '.txt', '.adoc',
+
+  // Config / Metadata
+  '.json', '.yaml', '.yml', '.toml', '.ini', '.env',
+
+  // Web / UI
+  '.html', '.htm', '.css', '.scss', '.sass', '.less', '.xml',
+  '.vue', '.svelte',
+
+  // Office / Reference files (optional)
+  '.pdf', '.docx',
 ]);
+
 
 // INITIALIZE THE FILE NODE
 
@@ -41,6 +92,10 @@ export async function parseDirectory(
   for(const entry of entries) {
     //If this entry is a folder and its name is in our IGNORE set, we skip processing it entirely
     if (entry.isDirectory() && IGNORE.has(entry.name)) {
+      continue;
+    }
+
+    if (!entry.isDirectory() && IGNORED_FILES.has(entry.name)) {
       continue;
     }
 
