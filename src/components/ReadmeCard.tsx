@@ -1,3 +1,4 @@
+// src\components\ReadmeCard.tsx
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -38,9 +39,11 @@ export default function ReadmeCard() {
   if (!md) return null
 
   return (
-    <div className="my-4 p-4 border rounded bg-gray-50">
+    <div className="my-4 p-4 border rounded bg-gray-50 overflow-auto">
       <h4 className="font-semibold">📄 README</h4>
+      <div className="max-h-[70vh] overflow-y-auto mt-2 p-2 border rounded bg-white">
       <ReactMarkdown>{md}</ReactMarkdown>
+      </div>
       <button
         className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
         onClick={() => {

@@ -1,10 +1,9 @@
 // src/components/FileExplorer.tsx
 'use client'
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useState } from 'react';
 import type { FileNode } from '@/lib/parser';
 import { useRepoTree } from '@/hooks/useRepoTree'
 import SummaryCard from './SummaryCard';
-import ChatBox from './ChatBox'
 import ChatModal from './ChatModal';
 import { Message } from './ChatModal';
 
@@ -40,6 +39,19 @@ export default function FileExplorer(){
     return (
       <div className="flex h-screen overflow-hidden">
         <aside className="w-1/3 border-r p-4 pb-25 flex flex-col overflow-y-auto max-h-[calc(100vh-64px)]">
+          
+          {/* GITHUB LINK COLLECTOR */}
+          <div>
+            <label className="">Paste Github URL</label>
+            <div>
+              <input type="text" 
+              className=""
+              value={repoUrl} onChange={(e) => setRepoUrl(e.target.value)}
+              placeholder="https://github.com/user/repo"/>
+              <button onClick={() => loadFromURL(repoUrl)}>Fetch</button>
+            </div>
+          </div>
+          
           {/* 1) Drop-zone + hidden input */}
           <div
             className="mb-4 p-6 border-2 border-dashed text-center cursor-pointer"

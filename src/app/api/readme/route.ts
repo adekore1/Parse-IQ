@@ -4,7 +4,7 @@ import path from 'path'
 import { parseDirectory, FileNode } from '@/lib/parser'
 import { generateReadme } from '@/lib/readmeGenerator'
 
-export async function GET(req: NextRequest){
+export async function GET(){
     try{
      // 1. Determine the root you want to scan (e.g. your src folder)
     const srcRoot = path.join(process.cwd(), 'src')
@@ -13,15 +13,16 @@ export async function GET(req: NextRequest){
     const tree: FileNode[] = await parseDirectory(srcRoot, srcRoot)
 
 
-     const markdown = await generateReadme(tree)
+     const markdown = await generateReadme(tree,)
 
     return NextResponse.json({ markdown })
-  } catch (err: any) {
+  } catch (err: unknown) {
       console.error('Error in /api/readme GET:', err)
+      if(err instanceof Error){
       return NextResponse.json(
-        { error: 'Failed to generate README' },
+        { error: `Failed to generate README: ${err}` },
         { status: 500 }
-      )
+      )}
     }
 }
 
@@ -31,8 +32,10 @@ export async function POST(req: NextRequest) {
     if (!Array.isArray(tree)) throw new Error('Invalid tree payload')
     const markdown = await generateReadme(tree)
     return NextResponse.json({ markdown })
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('Error in /api/readme POST:', err)
+    if(err instanceof Error){
     return NextResponse.json({ error: err.message }, { status: 400 })
+  }
   }
 }

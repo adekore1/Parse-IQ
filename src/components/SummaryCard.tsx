@@ -3,7 +3,6 @@
 import { jsPDF } from "jspdf";
 import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
-import { summarizeText } from "@/lib/summarizer";
 
 interface SummaryCardProps {
   path: string;
@@ -32,9 +31,11 @@ export default function SummaryCard({ path, content }: SummaryCardProps) {
           throw new Error((await res.json()).error || res.statusText);
         const { summary } = await res.json();
         setMd(summary);
-      } catch (e: any) {
+      } catch (e: unknown) {
         console.error(e);
-        setError(e.message);
+        if(e instanceof Error){
+          setError(e.message);
+        }
       } finally {
         setLoading(false);
       }

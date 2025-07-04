@@ -1,16 +1,18 @@
 //src\app\api\pdfDocxParse\route.ts
 
-import { NextRequest, NextResponse } from "next/server";
-const mammoth = require("mammoth");
-const pdfjsLib = require("pdfjs-dist/legacy/build/pdf.js");
-pdfjsLib.GlobalWorkerOptions.workerSrc = require("pdfjs-dist/legacy/build/pdf.worker.js");
+import { NextResponse } from "next/server";
+
+import mammoth from "mammoth";
+// const pdfjsLib = require("pdfjs-dist/legacy/build/pdf.js");
+// pdfjsLib.GlobalWorkerOptions.workerSrc = require("pdfjs-dist/legacy/build/pdf.worker.js");
+// pdfjsLib.GlobalWorkerOptions.workerSrc = require("pdfjs-dist/legacy/build/pdf.worker.js");
 type TextItem = { str: string };
 
 // import mammoth from 'mammoth'
 
 export const runtime = "nodejs"; // not 'edge'
 
-function isTextItem(item: any): item is TextItem {
+function isTextItem(item: unknown): item is TextItem {
   return typeof item === "object" && item !== null && "str" in item;
 }
 
@@ -35,12 +37,17 @@ export async function POST(req: Request) {
     let text = "";
     try {
       if (file.name.endsWith(".pdf")) {
+        const pdfjsLib = await import("pdfjs-dist/legacy/build/pdf.js");
+        const workerSrc = (await import("pdfjs-dist/legacy/build/pdf.worker.js")).default;
+
+        (pdfjsLib as any).GlobalWorkerOptions.workerSrc = workerSrc;
+        // (pdfjsLib as any).GlobalWorkerOptions.standardFontDataUrl = "/pdf-fonts/";
         console.log("Parsing PDF:", file.name);
         // get document
-        const doc = await pdfjsLib.getDocument({ data: buffer }).promise;
+        const doc = await (pdfjsLib as any).getDocument({ data: buffer }).promise;
         // get pages
         const numPages = doc.numPages;
-        let content: string[] = [];
+        const content: string[] = [];
 
         // for each page, copy text
         for (let i = 1; i <= numPages; i++) {
@@ -50,7 +57,7 @@ export async function POST(req: Request) {
           const textContent = await page.getTextContent();
           const pageText = textContent.items
             .filter(isTextItem)
-            .map((item: { str: any }) => item.str)
+            .map((item: { str: string }) => item.str)
             .join(" ");
             // add to content array
           content.push(pageText);
@@ -65,9 +72,9 @@ export async function POST(req: Request) {
           });
         //   get text
           text = result.value;
-        } catch (err: any) {
+        } catch (err: unknown) {
           return NextResponse.json(
-            { error: "Invalid DOCX file format or corrupted file." },
+            { error: `Invalid DOCX file format or corrupted file: ${err}` },
             { status: 400 }
           );
         }
@@ -77,17 +84,31 @@ export async function POST(req: Request) {
           { status: 400 }
         );
       }
-    } catch (parseError: any) {
+    } catch (parseError: unknown) {
       console.error("Parse error:", parseError);
+      if (parseError instanceof Error) {
+        return NextResponse.json(
+          { error: `Failed to parse file: ${parseError.message}` },
+          { status: 500 }
+        );
+      }
+
       return NextResponse.json(
-        { error: `Failed to parse file: ${parseError.message}` },
+        { error: "Unknown parse error occurred" },
         { status: 500 }
       );
     }
 
     return NextResponse.json({ text });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("[pdfDocxParse] API Error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json(
+      { error: "Unexpected error occurred" },
+      { status: 500 }
+    );
   }
 }

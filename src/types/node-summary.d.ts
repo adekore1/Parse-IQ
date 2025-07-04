@@ -12,11 +12,11 @@ declare module 'node-summary' {
     callback: (err: Error | null, summary: string) => void
   ): void;
 
-   /** Summarize a web page at the given URL */
-  function summarizeFromUrl(
-    url: string,
-    callback: (err: Error | null, summary: string) => void
-  ): void;
+  //  /** Summarize a web page at the given URL */
+  // function summarizeFromUrl(
+  //   url: string,
+  //   callback: (err: Error | null, summary: string) => void
+  // ): void;
 
   function getSortedSentences(
     title: string,

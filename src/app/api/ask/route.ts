@@ -66,8 +66,8 @@ export async function POST(request: NextRequest){
             })
             const answer = response.choices[0].message.content?.trim() ?? ''
               return NextResponse.json({ answer })
-          } catch (err: any) {
+          } catch (err: unknown) {
               console.error('Error in /api/ask:', err)
-              return NextResponse.json({ error: err.message }, { status: 500 })
+              return NextResponse.json({ error: err}, { status: 500 })
         }
 }

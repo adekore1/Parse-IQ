@@ -8,4 +8,5 @@ declare module 'pdfjs-dist' {
     height: number;
     fontName: string;
   }
+
 }

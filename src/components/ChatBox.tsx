@@ -1,7 +1,6 @@
 // src/components/ChatBox.tsx
 'use client'
 
-import { Assistant } from 'openai/resources/beta/assistants.mjs'
 import { useState, useRef, useEffect } from 'react'
 import ReactMarkdown from 'react-markdown'
 
@@ -44,9 +43,11 @@ export default function ChatBox({path, content, messages, setMessages}: ChatCard
     if (!response.ok){ throw new Error(data.error || response.statusText)}
     setMessages(m => [...m, {sender: 'assistant', text: data.answer}])
 
-    } catch(e:any) {
+    } catch(e:unknown) {
         console.error('Ask failed', e)
-        setError(e.message)
+        if(e instanceof Error){
+          setError(e.message)
+        }
     } finally {
         setLoading(false)
     }

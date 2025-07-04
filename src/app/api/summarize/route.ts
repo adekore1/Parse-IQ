@@ -12,7 +12,7 @@ export async function POST(req: NextRequest){
     try{
         const {path: relativePath, content: overrideContent} = (await req.json()) as {path: string, content?: string};
 
-        const absolutePath = path.resolve(process.cwd(), relativePath);
+        // const absolutePath = path.resolve(process.cwd(), relativePath);
 
         // const content = await fs.readFile(absolutePath, 'utf-8');
         const content = overrideContent ?? await fs.readFile(
@@ -23,12 +23,14 @@ export async function POST(req: NextRequest){
         const summary = await summarizeText(relativePath, content);
 
         return NextResponse.json({summary});
-    } catch(err: any){
+    } catch(err: unknown){
         console.error('Error in api/summarize: ', err)
+        if(err instanceof Error){
         return NextResponse.json(
             {error: 'Failed to summarize file.'},
             {status: 500}
         );
+        }
     }
 
 }
