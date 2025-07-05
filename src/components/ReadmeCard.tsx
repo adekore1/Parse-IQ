@@ -4,35 +4,53 @@
 import { useState, useEffect } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { jsPDF } from 'jspdf'
+import { FileNode } from '@/lib/parser'
 
-export default function ReadmeCard() {
+interface Props {
+  tree: FileNode[] | null
+}
+
+export default function ReadmeCard({tree}:Props) {
   const [md, setMd] = useState<string | null>(null)
   const [loading, setLoading]   = useState(true)
   const [error, setError]       = useState<string | null>(null)
 
-  useEffect(() => {
+  const generate = async () => {
+    if(!tree || tree.length ===0){
+      setError('No file tree provided')
+      return
+    }
+
     setLoading(true)
     setError(null)
 
-    fetch('/api/readme')
-      .then(async res => {
-        if (!res.ok) {
-          const body = await res.json().catch(() => ({}))
-          throw new Error(body.error || res.statusText)
-        }
-        return res.json()
+    try{
+      const res=await fetch('api/readme', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({tree})
       })
-      .then(data => {
-        setMd(data.markdown)
-      })
-      .catch(err => {
-        console.error('README fetch failed:', err)
+
+      if(!res.ok){
+        const body=await res.json().catch(()=>({}))
+        throw new Error(body.error || res.statusText)
+      }
+
+      const data = await res.json()
+      setMd(data.markdown)
+    } catch (err: unknown){
+      if(err instanceof Error){
         setError(err.message)
-      })
-      .finally(() => {
-        setLoading(false)
-      })
-  }, [])
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+
+  useEffect(() => {
+    if (tree) generate()
+  }, [tree])
 
   if (loading)  return <p>Loading README...</p>
   if (error)    return <p className="text-red-500">Error: {error}</p>
