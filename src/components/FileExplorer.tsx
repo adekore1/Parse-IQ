@@ -96,7 +96,7 @@ export default function FileExplorer() {
       <div className="flex-1 max-h-[90vh] overflow-y-hidden overflow-x-auto border-2">
         <div className="flex w-max min-w-full overflow-x-auto">
           {/* Summary Pane - fixed width */}
-          <div className="min-w-[800px] max-w-[1200px] border-r p-2 overflow-y-auto">
+          <div className="min-w-[800px] max-w-[1000px] border-r p-2 overflow-y-auto">
             {selected ? (
               <>
                 {/* Header */}
