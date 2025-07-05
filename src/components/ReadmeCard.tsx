@@ -46,7 +46,7 @@ export default function ReadmeCard({ tree }: ReadmeCardProps) {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [tree]);
 
   if (loading) return <p>Loading README...</p>;
   if (error) return <p className="text-red-500">Error: {error}</p>;
