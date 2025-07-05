@@ -1,6 +1,7 @@
 // src/components/FileExplorer.tsx
 'use client'
 import { useRef, useState } from 'react';
+import { useTree } from './treeContent';
 import type { FileNode } from '@/lib/parser';
 import { useRepoTree } from '@/hooks/useRepoTree'
 import SummaryCard from './SummaryCard';
@@ -9,7 +10,8 @@ import { Message } from './ChatModal';
 
 export default function FileExplorer(){
     const [repoUrl, setRepoUrl] = useState('')
-    const { tree, loading, error, loadFromFiles, loadFromURL,} = useRepoTree({ server: !!repoUrl, repoUrl })
+    const [tree, setTree] = useState<FileNode[]>([])
+    const { loading, error, loadFromFiles, loadFromURL,} = useRepoTree({ server: !!repoUrl, repoUrl, setTree })
     const [showChat, setShowChat] = useState(false);
     const [chatMessages, setChatMessages] = useState<Message[]>([]);
     const [selected, setSelected] = useState<FileNode | null>(null);

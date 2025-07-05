@@ -5,15 +5,17 @@ import { useState, useEffect } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { jsPDF } from 'jspdf'
 import { FileNode } from '@/lib/parser'
+import { useTree } from './treeContent'
 
 interface Props {
   tree: FileNode[] | null
 }
 
-export default function ReadmeCard({tree}:Props) {
+export default function ReadmeCard() {
   const [md, setMd] = useState<string | null>(null)
   const [loading, setLoading]   = useState(true)
   const [error, setError]       = useState<string | null>(null)
+  const {tree} = useTree()
 
   const generate = async () => {
     if(!tree || tree.length ===0){
