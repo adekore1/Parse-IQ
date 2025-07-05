@@ -2,7 +2,6 @@
 import './globals.css'
 import Link from 'next/link'
 import type { Metadata } from "next";
-import { TreeProvider } from '@/components/treeContent';
 
 export const metadata: Metadata = {
   title: "FlowDoc",
@@ -17,16 +16,14 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <body className="h-full flex flex-col">
-        <TreeProvider>
         <header className="shrink-0 bg-gray-800 text-white p-4 flex space-x-4">
           <Link href="/" className="hover:underline">Explorer</Link>
-          <Link href="/docs" className="hover:underline">Docs</Link>
+          {/* <Link href="/docs" className="hover:underline">Docs</Link> */}
           <Link href="/chat" className="hover:underline">Chat</Link>
         </header>
         <div className="h-full flex-1 overflow-hidden">
           {children}
         </div>
-        </TreeProvider>
       </body>
     </html>
   );

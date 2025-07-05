@@ -46,10 +46,10 @@ export default function SummaryCard({ path, content }: SummaryCardProps) {
   if (loading) return <p>Loading summary…</p>;
   if (error) return <p className="text-red-500">Error: {error}</p>;
   return (
-    <div className="bg-gray-50 p-4 rounded flex flex-col h-full">
+    <div className="my-4 p-4 border rounded bg-gray-50 overflow-auto">
       <h4 className="font-semibold">📄 Summary:</h4>
 
-      <div className="flex-1 overflow-y-auto border p-2 rounded bg-white mb-4 max-h-[70vh]">
+      <div className="max-h-[65vh] overflow-y-auto mt-2 p-2 border rounded bg-white">
         <ReactMarkdown>{md}</ReactMarkdown>
       </div>
 

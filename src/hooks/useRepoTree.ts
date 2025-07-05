@@ -7,7 +7,6 @@ interface UseRepoTreeOpts {
   /** if true, on mount fetch from /api/tree; otherwise start empty */
   server?: boolean;
   repoUrl?: string;
-  setTree?: (tree: FileNode[]) => void;
 }
 
 const IGNORE = new Set([".git", "node_modules", ".next", ".vercel"]);
@@ -92,12 +91,9 @@ const ALLOWED = new Set([
   ".docx",
 ]);
 
-export function useRepoTree({ server = false, repoUrl, setTree: externalSetTree }: UseRepoTreeOpts = {}) {
+export function useRepoTree({ server = false, repoUrl }: UseRepoTreeOpts = {}) {
   // initialize needed react elements
-  // const [tree, setTree] = useState<FileNode[]>([]);
-  const [internalTree, internalSetTree] = useState<FileNode[]>([]);
-  const tree = internalTree;
-  const setTree = externalSetTree ?? internalSetTree;
+  const [tree, setTree] = useState<FileNode[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

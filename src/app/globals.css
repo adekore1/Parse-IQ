@@ -20,9 +20,15 @@
   }
 }
 
-html, body {
+/* html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: auto; /* ✅ restrict scrolling */
+  overflow: auto; ✅ restrict scrolling */
+/* } */
+
+html,
+body,
+#__next {
+  overflow-x: hidden;
 }

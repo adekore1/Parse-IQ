@@ -87,7 +87,7 @@ export async function generateReadme(tree: FileNode[]): Promise<string>{
               // 2) Trim and cache
               const summary = content.trim();
             md += `${summary}\n\n`
-        } catch (err: unknown) {
+        } catch {
             console.warn(`error with readME generation.`)
         }
     // }
