@@ -1,43 +1,60 @@
-// source/api/github/route.ts
-import { NextRequest, NextResponse } from 'next/server'
-import { simpleGit } from 'simple-git'
-import { v4 as uuid } from 'uuid'
-import { join } from 'path'
-import { tmpdir } from 'os'
-import fs from 'fs-extra'
-import { parseDirectory, FileNode } from '@/lib/parser'
+import { NextRequest, NextResponse } from 'next/server';
+import { v4 as uuid } from 'uuid';
+import { join } from 'path';
+import { tmpdir } from 'os';
+import fs from 'fs-extra';
+import AdmZip from 'adm-zip';
+import { parseDirectory, FileNode } from '@/lib/parser';
 
-// rceive post request (contains header, type and body{url})
-export async function POST(req: NextRequest){
-  // 1) extract url
-    const { url } = (await req.json()) as { url?: string }
-    // check url validity
+function parseGitHubUrl(repoUrl: string) {
+  const match = repoUrl.match(/^https:\/\/github\.com\/([^/]+)\/([^/]+)(?:\/|$)/);
+  if (!match) return null;
+  return {
+    owner: match[1],
+    repo: match[2],
+  };
+}
+
+export async function POST(req: NextRequest) {
+  const { url } = (await req.json()) as { url?: string };
+
   if (!url) {
-    return NextResponse.json({ error: 'Missing "url" in request' }, { status: 400 })
+    return NextResponse.json({ error: 'Missing "url" in request' }, { status: 400 });
   }
 
-  // 2) make temp folder/directory to store the parsed url later
-  const cloneDir = join(tmpdir(), `flowdoc-${uuid()}`)
+  const repoInfo = parseGitHubUrl(url);
+  if (!repoInfo) {
+    return NextResponse.json({ error: 'Invalid GitHub URL' }, { status: 400 });
+  }
+
+  const { owner, repo } = repoInfo;
+  const cloneDir = join(tmpdir(), `flowdoc-${uuid()}`);
+  const zipUrl = `https://codeload.github.com/${owner}/${repo}/zip/refs/heads/main`;
 
   try {
-    // 3) Clone the repo shallowly into the temp folder
-    await simpleGit().clone(url, cloneDir, { '--depth': '1' })
+    const res = await fetch(zipUrl);
+    if (!res.ok) throw new Error(`GitHub ZIP fetch failed: ${res.statusText}`);
 
-    // 4) Parse that directory into your FileNode[] tree
-    const tree: FileNode[] = await parseDirectory(cloneDir, cloneDir)
+    const buffer = Buffer.from(await res.arrayBuffer());
 
-    // 5) Return the tree as JSON
-    return NextResponse.json(tree)
-  } catch (err: unknown) {
-    console.error('Error cloning or parsing GitHub repo:', err)
+    // extract buffer
+    const zip = new AdmZip(buffer);
+    zip.extractAllTo(cloneDir, true);
+
+    // GitHub adds a root folder: repo-main/
+    const rootDir = join(cloneDir, `${repo}-main`);
+    const tree: FileNode[] = await parseDirectory(rootDir, rootDir);
+
+    return NextResponse.json(tree);
+  } catch (err: any) {
+    console.error('Failed to fetch or parse repo:', err);
     return NextResponse.json(
-      { error: `Failed to fetch or parse repo: ${err}` },
+      { error: `Failed to fetch or parse repo: ${err.message}` },
       { status: 500 }
-    )
+    );
   } finally {
-    // 6) Clean up the temp folder
     try {
-      await fs.remove(cloneDir)
+      await fs.remove(cloneDir);
     } catch {}
   }
 }

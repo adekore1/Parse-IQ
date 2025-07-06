@@ -13,6 +13,7 @@
     "@tailwindcss/typography": "^0.5.16",
     "@tailwindcss/vite": "^4.1.7",
     "@types/pdfjs-dist": "^2.10.377",
+    "adm-zip": "^0.5.16",
     "fs-extra": "^11.3.0",
     "jspdf": "^3.0.1",
     "lucide-react": "^0.515.0",
@@ -32,6 +33,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4.1.7",
+    "@types/adm-zip": "^0.5.7",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20",
     "@types/pdf-parse": "^1.1.5",
