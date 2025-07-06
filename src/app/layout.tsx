@@ -4,7 +4,7 @@ import Link from 'next/link'
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "FlowDoc",
+  title: "Parse IQ",
   description: "AI-powered code explorer & docs generator",
 };
 
