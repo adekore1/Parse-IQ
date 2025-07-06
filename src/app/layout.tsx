@@ -6,6 +6,10 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Parse IQ",
   description: "AI-powered code explorer & docs generator",
+icons: {
+    icon: "/favicon.ico",         // or "/your-icon.png"
+    shortcut: "/favicon.ico",     // for compatibility
+  },
 };
 
 export default function RootLayout({
