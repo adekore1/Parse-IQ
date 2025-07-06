@@ -1,73 +1,108 @@
 // src/app/api/ask/route.ts
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
-import fs from 'fs/promises'
-import path from 'path'
-import OpenAI from 'openai'
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import fs from "fs/promises";
+import path from "path";
+import OpenAI from "openai";
 
-const ai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! })
+const ai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
 
-export async function POST(request: NextRequest){
-    try{
-        const {path: relativePath,content, question} = (await request.json()) as {
-            path?: string
-            content?: string
-            question: string
-        }
+export async function POST(request: NextRequest) {
+  try {
+    const {
+      path: relativePath,
+      content,
+      question,
+    } = (await request.json()) as {
+      path?: string;
+      content?: string;
+      question: string;
+    };
 
-        if (!question) {
-          return NextResponse.json(
-            { error: 'Question is required' },
-            { status: 400 }
-          )
-        }
+    if (!question) {
+      return NextResponse.json(
+        { error: "Question is required" },
+        { status: 400 }
+      );
+    }
 
-        let context = ''
-        if (typeof content === 'string') {
-          context = content
-        }
-        else if(relativePath){
-            const absolutePath = path.resolve(process.cwd(), relativePath)
-            const content = await fs.readFile(absolutePath, 'utf-8')
-            context = content
-        }
+    let context = "";
+    if (typeof content === "string") {
+      context = content;
+    } else if (relativePath) {
+      const absolutePath = path.resolve(process.cwd(), relativePath);
+      const content = await fs.readFile(absolutePath, "utf-8");
+      context = content;
+    }
 
-        const prompt = `You are a helpful, adaptive assistant designed to answer questions about a given file's content. The content could be source code, a resume, technical documentation, a book excerpt, or general text. Your reply must always follow these rules:
+    const prompt = `You are a versatile, intelligent assistant designed to analyze and respond to questions about the contents of a single file. This file may contain source code, resumes, technical documentation, creative writing, book excerpts, or general text.
 
-                        ## 🎯 Objective:
-                        - Interpret the user’s question with empathy and precision.
-                        - Use the provided content as context.
-                        - Answer using clear, structured **Markdown**.
-                        - Tailor your tone to the user’s writing style (formal, casual, technical).
+Your task is to interpret the user’s question accurately, using only the provided file content as context. Always communicate clearly, use Markdown for formatting, and adapt your tone to match the user (formal, casual, technical, etc.).
 
-                        ## 🧠 Core Instructions:
-                        - Start with a brief contextual introduction.
-                        - Answer the user's question in logical sections.
-                        - For **code**, include: explanation, improvements, edge cases, and performance tips.
-                        - For **resumes**, provide writing tips, impact advice, formatting suggestions, and keyword optimization.
-                        - For **books/essays**, explain meaning, theme, and clarity improvements.
-                        - For **technical docs**, clarify structure, consistency, gaps, and audience suitability.
+=====================
+🎯 OBJECTIVE
+=====================
+- Understand the user’s intent clearly and empathetically.
+- Analyze the file’s content to answer accurately and insightfully.
+- Tailor your tone to the user’s writing style and goals.
+- Format all responses in **Markdown only**.
 
-                        ## 📌 Format:
-                        - Always use new paragraphs between logical ideas.
-                        - Use bullet points (-) for clarity.
-                        - Use headers (##, ###) to separate sections if the answer is long.
-                        - Never break character. Never say "I am an AI" or similar disclaimers.
+=====================
+🧠 RESPONSE STRATEGY
+=====================
+1. **Brief Context**
+   - Start by identifying what the file contains (e.g., code, essay, book, resume).
 
-                        Markdown only.`;
-        const response = await ai.chat.completions.create({
-              model: 'gpt-4.1-mini',
-              messages: [
-                {role: 'system', content: [prompt].join(' ')},
-                {role: 'user', content: `code:\n\n${context}`},
-                {role: 'user', content: `Question:\n\n${question}`}
-              ],
-              temperature: 0.2,
-            })
-            const answer = response.choices[0].message.content?.trim() ?? ''
-              return NextResponse.json({ answer })
-          } catch (err: unknown) {
-              console.error('Error in /api/ask:', err)
-              return NextResponse.json({ error: err}, { status: 500 })
-        }
+2. **Detailed Answer by Content Type**
+
+- **For Code**:
+  - Explain what the code does, section by section.
+  - Clarify any complex logic.
+  - Identify edge cases, bugs, or inefficiencies.
+  - Suggest improvements or optimizations.
+
+- **For Resumes**:
+  - Suggest wording and formatting improvements.
+  - Offer tips for stronger impact and clarity.
+  - Highlight potential ATS (Applicant Tracking System) issues.
+  - Recommend job-specific keywords.
+
+- **For Books / Essays / Stories**:
+  - Summarize key ideas, plot points, or themes.
+  - Offer literary analysis and interpretation.
+  - Suggest ways to improve clarity, pacing, or flow.
+
+- **For Technical Documents**:
+  - Clarify structure and intent.
+  - Spot inconsistencies or areas of confusion.
+  - Suggest simplification or rewording for the target audience.
+
+=====================
+📌 FORMAT RULES
+=====================
+- Use '##' or '###' headings to break up long answers.
+- Use bullet points for clarity.
+- Separate ideas with new paragraphs.
+- Be concise but comprehensive.
+- Never say “I am an AI” or similar disclaimers.
+
+be direct..
+
+
+                        Use emojies where needed.`;
+    const response = await ai.chat.completions.create({
+      model: "gpt-4.1-mini",
+      messages: [
+        { role: "system", content: [prompt].join(" ") },
+        { role: "user", content: `code:\n\n${context}` },
+        { role: "user", content: `Question:\n\n${question}` },
+      ],
+      temperature: 0.2,
+    });
+    const answer = response.choices[0].message.content?.trim() ?? "";
+    return NextResponse.json({ answer });
+  } catch (err: unknown) {
+    console.error("Error in /api/ask:", err);
+    return NextResponse.json({ error: err }, { status: 500 });
+  }
 }

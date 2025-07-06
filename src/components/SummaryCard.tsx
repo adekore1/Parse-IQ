@@ -1,4 +1,3 @@
-// src/components/SummaryCard.tsx
 "use client";
 import { jsPDF } from "jspdf";
 import { useState, useEffect } from "react";
@@ -15,7 +14,6 @@ export default function SummaryCard({ path, content }: SummaryCardProps) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // reset state
     setMd("");
     setError(null);
     setLoading(true);
@@ -33,29 +31,31 @@ export default function SummaryCard({ path, content }: SummaryCardProps) {
         setMd(summary);
       } catch (e: unknown) {
         console.error(e);
-        if(e instanceof Error){
+        if (e instanceof Error) {
           setError(e.message);
         }
       } finally {
         setLoading(false);
       }
     }
+
     load();
   }, [path, content]);
 
-  if (loading) return <p>Loading summary…</p>;
-  if (error) return <p className="text-red-500">Error: {error}</p>;
-  return (
-    <div className="my-4 p-4 border rounded bg-gray-50 overflow-auto">
-      <h4 className="font-semibold">📄 Summary:</h4>
+  if (loading) return <p className="text-sm text-gray-400">Loading summary…</p>;
+  if (error) return <p className="text-red-500 text-sm">Error: {error}</p>;
 
-      <div className="max-h-[65vh] overflow-y-auto mt-2 p-2 border rounded bg-white">
+  return (
+    <div className="bg-[#242428] p-4 rounded text-gray-200 text-sm shadow-sm">
+      <h4 className="text-gray-300 font-semibold mb-2">📄 Summary:</h4>
+
+      <div className="max-h-[65vh] overflow-y-auto rounded bg-[#1f1f24] p-4 text-gray-300 prose prose-invert">
         <ReactMarkdown>{md}</ReactMarkdown>
       </div>
 
-      <div className="flex gap-2 mt-4 ">
+      <div className="flex flex-wrap gap-2 mt-4">
         <button
-          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition-all"
           onClick={() => {
             const blob = new Blob([md], { type: "text/markdown" });
             const url = URL.createObjectURL(blob);
@@ -67,39 +67,29 @@ export default function SummaryCard({ path, content }: SummaryCardProps) {
             setTimeout(() => URL.revokeObjectURL(url), 1000);
           }}
         >
-          Download Summary as .Md
+          Download .Md
         </button>
 
         <button
-          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition-all"
           onClick={() => {
-            // 1) Instantiate a PDF doc
-            const doc = new jsPDF({
-              unit: "pt",
-              format: "letter",
-            });
-
-            // 2) Split your Markdown into lines (or strip markdown syntax first)
+            const doc = new jsPDF({ unit: "pt", format: "letter" });
             const lines = md.split("\n");
-            let y = 40; // start a bit down from top
+            let y = 40;
             doc.setFontSize(12);
-
             for (const line of lines) {
               doc.text(line, 40, y);
               y += 16;
               if (y > 800) {
-                // simple page-break logic
                 doc.addPage();
                 y = 40;
               }
             }
-
-            // 3) Save the PDF
             const filename = path.replace(/\//g, "_") + ".pdf";
             doc.save(filename);
           }}
         >
-          Download Summary as PDF
+          Download PDF
         </button>
       </div>
     </div>

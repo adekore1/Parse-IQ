@@ -20,15 +20,25 @@
   }
 }
 
-/* html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow: auto; ✅ restrict scrolling */
-/* } */
-
 html,
 body,
 #__next {
   overflow-x: hidden;
+}
+
+::-webkit-scrollbar{
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb{
+  background: #484848;
+  border-radius: 2rem;
+  border: 1rem solid transparent;
+  /* background-clip: content-box; */
+}
+::-webkit-scrollbar-thumb:hover{
+  background: #676666;
+}
+::-webkit-scrollbar-track{
+  background: #242428;
 }

@@ -34,8 +34,7 @@ export async function generateReadme(tree: FileNode[]): Promise<string>{
     const text = content
 
     let md = ` Project Overview\n\n
-            _This README was created by FlowDoc_\n\n
-            >>> File Summaries <<<\n\n`;
+            _This README was created by Parse IQ\n\n`;
 
         try {
               
@@ -53,23 +52,12 @@ export async function generateReadme(tree: FileNode[]): Promise<string>{
                   {
                     role: "system",
                     content: [
-                      `You are a skilled technical writer. Create a professional and well-structured README for a project named **[Your Project Name]**. It is a [brief description, e.g., "web app for summarizing and exploring codebases"].
+                      `You are an expert open-source maintainer, technical writer, and full-stack software engineer.
+Your task is to generate a high-quality, professional, and helpful 'README.md' for a codebase based on its file tree.
+Use emojis where needed for a friendly view.
 
-                        Include the following sections in markdown format:
-
-                        1. **Project Title**  
-                        2. **Overview**  Short, clear summary of what the project does.  
-                        3. **Features**  Bullet list of key capabilities.  
-                        4. **Installation**  Step-by-step guide to set it up locally.  
-                        5. **Usage** How to run and use the project.  
-                        6. **API / Commands**  Any APIs or CLI commands (if relevant).  
-                        7. **Technologies Used**  Languages, frameworks, libraries.  
-                        8. **Contributing**  Guidelines for contributing (if any).  
-                        9. **License**  Include license type and any conditions.  
-                        10. **Acknowledgements / Credits** (optional)
-
-                        Use clear markdown formatting, appropriate code blocks, and make it beginner-friendly but technically correct.
-                      `
+iF YOU ENCOUNTER A DIRECTORY WITH NO CODE, JUST MAKE A README EXPLAINING TEH CONTENT OF THE DIRECTORY, AS WELL AS ANYTHING YOU DEEM FIT.
+Use the following file structure:  `
                       
                     ].join(" "),
                   },

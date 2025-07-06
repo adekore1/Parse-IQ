@@ -1,4 +1,3 @@
-// src/components/FileExplorer.tsx
 "use client";
 import { useRef, useState } from "react";
 import type { FileNode } from "@/lib/parser";
@@ -18,18 +17,14 @@ export default function FileExplorer() {
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
   const [selected, setSelected] = useState<FileNode | null>(null);
   const [showReadme, setShowReadme] = useState(false);
-  // It can either hold a single FileNode (the file the user last clicked) or null (no selection).
-  // We start at null because no file is chosen when the component first appears.
-  // To track which file’s contents to show in the right-hand pane.
-
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const renderTree = (nodes: FileNode[]) => (
-    <ul className="pl-4 space-y-1">
+    <ul className="pl-4 pb-4 space-y-1">
       {nodes.map((n) => (
         <li key={n.path}>
           <button
-            className="text-left hover:underline"
+            className="text-left text-gray-400 text-sm hover:text-white hover:cursor-pointer transition-colors"
             onClick={() => !n.isDirectory && setSelected(n)}
           >
             {n.isDirectory ? "📁" : "📄"} {n.name}
@@ -41,26 +36,31 @@ export default function FileExplorer() {
   );
 
   return (
-    <div className="flex h-screen overflow-auto">
-      <aside className="w-1/3 min-w-[300px] border-r p-4 pb-25 flex flex-col overflow-y-auto max-h-[calc(100vh-64px)]">
-        {/* GITHUB LINK COLLECTOR */}
-        <div>
-          <label className="">Paste Github URL</label>
-          <div>
+    <div className="flex h-screen overflow-auto bg-[#242428] text-gray-200">
+      <aside className="w-1/3 min-w-[175px] max-w-[30vw] border-1 rounded-tr-2xl border-[#6f6e6e] p-3 flex flex-col overflow-y-auto bg-[#242428] shadow-2xl">
+        <div className="mb-6 ">
+          <label className="block text-sm font-medium text-gray-400 mb-1">
+            Paste GitHub URL
+          </label>
+          <div className="flex gap-2">
             <input
               type="text"
-              className=""
+              className="flex-1 text-xs bg-[#373737] text-gray-400 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300"
               value={repoUrl}
               onChange={(e) => setRepoUrl(e.target.value)}
               placeholder="https://github.com/user/repo"
             />
-            <button onClick={() => loadFromURL(repoUrl)}>Fetch</button>
+            <button
+              className="bg-indigo-600 text-gray-2 00 px-3 py-2 rounded-lg hover:bg-indigo-700 transition"
+              onClick={() => loadFromURL(repoUrl)}
+            >
+              Fetch
+            </button>
           </div>
         </div>
 
-        {/* 1) Drop-zone + hidden input */}
         <div
-          className="mb-4 p-6 border-2 border-dashed text-center cursor-pointer"
+          className="mb-4 p-6 text-gray-400 border-gray-400 text-center rounded-lg bg-[#373737] hover:bg-[#4a4a4a] cursor-pointer"
           onDragOver={(e) => e.preventDefault()}
           onDrop={(e) => {
             e.preventDefault();
@@ -68,8 +68,10 @@ export default function FileExplorer() {
           }}
           onClick={() => fileInputRef.current?.click()}
         >
-          <p>Drag & drop a folder here</p>
-          <p className="text-blue-600 underline">or click to select one</p>
+          <p className="text-sm">Drag & drop a folder here</p>
+          <p className="text-indigo-500 underline text-sm">
+            or click to select one
+          </p>
           <input
             ref={fileInputRef}
             type="file"
@@ -80,65 +82,61 @@ export default function FileExplorer() {
           />
         </div>
 
-        {/* 2) Loading / error / tree */}
         {loading ? (
-          <p>Loading files…</p>
+          <p className="text-sm text-gray-400">Loading files…</p>
         ) : error ? (
-          <p className="text-red-500">Error: {error}</p>
+          <p className="text-red-500 text-sm">Error: {error}</p>
         ) : tree.length > 0 ? (
           renderTree(tree)
         ) : (
-          <p className="text-gray-500">No files loaded</p>
+          <p className="text-gray-400 text-sm">No files loaded</p>
         )}
       </aside>
 
-      {/* 3) Main pane: summary + chat */}
-      <div className="flex-1 max-h-[90vh] overflow-y-hidden overflow-x-auto border-2">
-        <div className="flex w-max min-w-full overflow-x-auto">
-          {/* Summary Pane - fixed width */}
-          <div className="min-w-[800px] max-w-[1000px] border-r p-2 overflow-y-auto">
+      <div className="flex-1 max-h-[88.5vh] overflow-y-hidden overflow-x-auto">
+        <div className="flex w-max min-w-full overflow-x-auto ">
+          <div className="min-w-[400px] max-w-[70vw] p-4 bg-[#242428] shadow-sm">
             {selected ? (
               <>
-                {/* Header */}
-                <h2 className="text-xl font-semibold px-4">{selected.name}</h2>
-
-                {/* Scrollable Summary area */}
-                <div className="flex-1 min-h-0 overflow-y-auto px-4 pb-4">
-                  {/* <div className="h-full"> */}
+                <h2 className="text-sm font-semibold text-gray-400 mb-4 border-b pb-2">
+                  {selected.name}
+                </h2>
+                <div className="flex-1 min-h-0 overflow-y-auto ">
                   <SummaryCard
                     path={selected.path}
                     content={selected.content}
                   />
-                  {/* </div> */}
                 </div>
               </>
             ) : (
-              <p className="text-gray-500 p-4">
+              <p className="text-gray-400 p-4">
                 Select a file to view its summary
               </p>
             )}
           </div>
-          {/* README Pane - only if shown */}
+
           {showReadme && tree && tree.length > 0 && (
-            <aside className="min-w-[800px] max-w-[1100px] p-4 overflow-y-auto">
+            <aside className="min-w-[400px] max-w-[70vw] p-4 bg-[#1f1f24] shadow-sm">
               <ReadmeCard tree={tree} />
             </aside>
           )}
         </div>
       </div>
+
       <button
-        className="fixed bottom-20 right-6 px-4 py-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 z-50"
+        className="fixed bottom-20 right-6 px-4 py-2 bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700 z-50"
         onClick={() => setShowReadme(true)}
       >
         📄 Generate README
       </button>
-      {/* Fixed Chat at bottom */}
+
       <button
-        className="fixed bottom-6 right-6 px-4 py-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 z-50"
+        className="fixed bottom-6 right-6 px-4 py-2 bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700 z-50"
         onClick={() => setShowChat(true)}
       >
         💬 Open Chat
       </button>
+
       {showChat && selected && (
         <ChatModal
           path={selected.path || ""}

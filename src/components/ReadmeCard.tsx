@@ -1,4 +1,3 @@
-// src\components\ReadmeCard.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -48,62 +47,61 @@ export default function ReadmeCard({ tree }: ReadmeCardProps) {
       });
   }, [tree]);
 
-  if (loading) return <p>Loading README...</p>;
-  if (error) return <p className="text-red-500">Error: {error}</p>;
+  if (loading) return <p className="text-sm text-gray-400">Loading README...</p>;
+  if (error) return <p className="text-red-500 text-sm">Error: {error}</p>;
   if (!md) return null;
 
   return (
-    <div className="my-4 p-4 border rounded bg-gray-50 overflow-auto">
-      <h4 className="font-semibold">📄 README</h4>
-      <div className="max-h-[70vh] overflow-y-auto mt-2 p-2 border rounded bg-white">
+    <div className="bg-[#242428] p-4 rounded text-gray-200 text-sm shadow-sm">
+      <h4 className="text-gray-300 font-semibold mb-2">📄 README</h4>
+
+      <div className="max-h-[70vh] overflow-y-auto rounded bg-[#1f1f24] p-4 text-gray-300 prose prose-invert">
         <ReactMarkdown>{md}</ReactMarkdown>
       </div>
-      <button
-        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        onClick={() => {
-          const blob = new Blob([md], { type: "text/markdown" });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "README.md";
-          a.click();
-        }}
-      >
-        Download README as .Md
-      </button>
 
-      <button
-        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        onClick={() => {
-          // 1) Instantiate a PDF doc
-          const doc = new jsPDF({
-            unit: "pt",
-            format: "letter",
-            compress: true,
-          });
+      <div className="flex flex-wrap gap-2 mt-4">
+        <button
+          className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition-all"
+          onClick={() => {
+            const blob = new Blob([md], { type: "text/markdown" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "README.md";
+            a.click();
+          }}
+        >
+          Download .Md
+        </button>
 
-          // 2) Split your Markdown into lines (or strip markdown syntax first)
-          const lines = md.split("\n");
-          let y = 40; // start a bit down from top
-          doc.setFontSize(12);
+        <button
+          className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition-all"
+          onClick={() => {
+            const doc = new jsPDF({
+              unit: "pt",
+              format: "letter",
+              compress: true,
+            });
 
-          for (const line of lines) {
-            doc.text(line, 40, y);
-            y += 16;
-            if (y > 800) {
-              // simple page-break logic
-              doc.addPage();
-              y = 40;
+            const lines = md.split("\n");
+            let y = 40;
+            doc.setFontSize(12);
+
+            for (const line of lines) {
+              doc.text(line, 40, y);
+              y += 16;
+              if (y > 800) {
+                doc.addPage();
+                y = 40;
+              }
             }
-          }
 
-          // 3) Save the PDF
-          const filename = "README.pdf";
-          doc.save(filename);
-        }}
-      >
-        Download README as PDF
-      </button>
+            doc.save("README.pdf");
+          }}
+        >
+          Download PDF
+        </button>
+      </div>
     </div>
   );
 }

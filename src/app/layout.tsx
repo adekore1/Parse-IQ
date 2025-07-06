@@ -16,10 +16,8 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <body className="h-full flex flex-col">
-        <header className="shrink-0 bg-gray-800 text-white p-4 flex space-x-4">
-          <Link href="/" className="hover:underline">Explorer</Link>
-          {/* <Link href="/docs" className="hover:underline">Docs</Link> */}
-          <Link href="/chat" className="hover:underline">Chat</Link>
+        <header className="shrink-0 bg-[#242428] text-white p-4 flex space-x-4">
+          <Link href="/" className="hover:underline text-center">Parse IQ</Link>
         </header>
         <div className="h-full flex-1 overflow-hidden">
           {children}
