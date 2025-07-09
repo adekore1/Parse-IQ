@@ -39,7 +39,7 @@ export default function FileExplorer() {
     <div className="flex h-screen overflow-auto bg-[#242428] text-gray-200">
       <aside className="w-1/3 min-w-[175px] max-w-[30vw] border-1 rounded-tr-2xl border-[#6f6e6e] p-3 flex flex-col overflow-y-auto bg-[#242428] shadow-2xl">
         <div className="mb-6 ">
-          {/* <label className="block text-sm font-medium text-gray-400 mb-1">
+          <label className="block text-sm font-medium text-gray-400 mb-1">
             Paste GitHub URL
           </label>
           <div className="flex gap-2">
@@ -56,7 +56,7 @@ export default function FileExplorer() {
             >
               Fetch
             </button>
-          </div> */}
+          </div>
         </div>
 
         <div
