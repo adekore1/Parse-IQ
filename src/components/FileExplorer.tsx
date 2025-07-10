@@ -38,7 +38,7 @@ export default function FileExplorer() {
   return (
     <div className="flex h-screen overflow-auto bg-[#242428] text-gray-200">
       <aside className="w-1/3 min-w-[175px] max-w-[30vw] border-1 rounded-tr-2xl border-[#6f6e6e] p-3 flex flex-col overflow-y-auto bg-[#242428] shadow-2xl">
-        <div className="mb-6 ">
+        {/* <div className="mb-6 ">
           <label className="block text-sm font-medium text-gray-400 mb-1">
             Paste GitHub URL
           </label>
@@ -57,7 +57,7 @@ export default function FileExplorer() {
               Fetch
             </button>
           </div>
-        </div>
+        </div> */}
 
         <div
           className="mb-4 p-6 text-gray-400 border-gray-400 text-center rounded-lg bg-[#373737] hover:bg-[#4a4a4a] cursor-pointer"
@@ -68,7 +68,7 @@ export default function FileExplorer() {
           }}
           onClick={() => fileInputRef.current?.click()}
         >
-          <p className="text-sm">Drag & drop a folder here</p>
+          <p className="text-sm">Drag & drop a FOLDER here</p>
           <p className="text-indigo-500 underline text-sm">
             or click to select one
           </p>

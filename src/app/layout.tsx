@@ -23,7 +23,7 @@ export default function RootLayout({
         <header className="shrink-0 bg-[#242428] text-white p-4 flex space-x-4">
           <Link href="/" className="hover:underline text-center">Parse IQ</Link>
         </header>
-        <div className="h-full flex-1 overflow-hidden">
+        <div className="h-full flex-1 overflow-auto">
           {children}
         </div>
       </body>
