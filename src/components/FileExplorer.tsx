@@ -68,7 +68,7 @@ export default function FileExplorer() {
           }}
           onClick={() => fileInputRef.current?.click()}
         >
-          <p className="text-sm">Drag & drop a FOLDER here
+          <p className="text-sm">Drag & drop a FOLDER/CODEBASE here
           </p>
           <p className="text-indigo-500 underline text-sm">
             or click to select one
