@@ -74,7 +74,7 @@ export default function FileExplorer() {
             or click to select one
           </p>
           <p className="text-red-500 underline text-sm">
-            *files must not be corrupted*
+            *corrupted PDF / DOCX files will result in an error*
             </p>
           <input
             ref={fileInputRef}
