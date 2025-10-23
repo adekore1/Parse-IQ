@@ -86,9 +86,9 @@ const ALLOWED = new Set([
   ".vue",
   ".svelte",
 
-  // Office / Reference files (optional)
-  ".pdf",
-  ".docx",
+  // // Office / Reference files (optional)
+  // ".pdf",
+  // ".docx",
 ]);
 
 export function useRepoTree({ server = false, repoUrl }: UseRepoTreeOpts = {}) {
@@ -214,23 +214,23 @@ export function useRepoTree({ server = false, repoUrl }: UseRepoTreeOpts = {}) {
         //   if its at the last level and not a directory, read content
           if (i === levels.length - 1 && !node.isDirectory) {
             // special read for pdf and docx
-            if (ext === ".pdf" || ext === ".docx") {
-              const formData = new FormData();
-              formData.append("file", file);
+            // if (ext === ".pdf" || ext === ".docx") {
+            //   const formData = new FormData();
+            //   formData.append("file", file);
   
-              const res = await fetch("/api/pdfDocxParse", {
-                method: "POST",
-                body: formData,
-              });
+            //   const res = await fetch("/api/pdfDocxParse", {
+            //     method: "POST",
+            //     body: formData,
+            //   });
 
-              const result = await res.json().catch(() => null);
-              if (!res.ok || !result?.text) {
-                throw new Error(
-                  result?.error || "Failed to parse PDF/DOCX content"
-                );
-              }
-              node.content = result.text;
-            } else {
+            //   const result = await res.json().catch(() => null);
+            //   if (!res.ok || !result?.text) {
+            //     throw new Error(
+            //       result?.error || "Failed to parse PDF/DOCX content"
+            //     );
+            //   }
+            //   node.content = result.text;
+            // } else {
                 // regular file reading
               node.content = await new Promise<string>((res, rej) => {
                 const reader = new FileReader();
@@ -239,7 +239,7 @@ export function useRepoTree({ server = false, repoUrl }: UseRepoTreeOpts = {}) {
                 reader.readAsText(file);
               });
             }
-          }
+          // }
         //   move to the next level
           if (node.children) {
             currentLevel = node.children;
