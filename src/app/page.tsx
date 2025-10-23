@@ -123,6 +123,7 @@ export default function Home() {
             { ext: ".md", color: "text-white" },
             { ext: ".yml", color: "text-cyan-300" },
             { ext: ".sh", color: "text-green-300" },
+            { ext: "...others", color: "text-orange-300" },
           ].map((file, i) => (
             <span
               key={i}
