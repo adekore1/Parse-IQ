@@ -64,7 +64,7 @@ const ALLOWED = new Set([
   '.vue', '.svelte',
 
   // Office / Reference files (optional)
-  '.pdf', '.docx',
+  // '.pdf', '.docx',
 ]);
 
 

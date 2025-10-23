@@ -68,14 +68,11 @@ export default function FileExplorer() {
           }}
           onClick={() => fileInputRef.current?.click()}
         >
-          <p className="text-sm">Drag & drop a FOLDER/CODEBASE here
+          <p className="text-sm">Drag & drop a CODEBASE here
           </p>
           <p className="text-indigo-500 underline text-sm">
             or click to select one
           </p>
-          <p className="text-red-500 underline text-sm">
-            *corrupted PDF / DOCX files will result in an error*
-            </p>
           <input
             ref={fileInputRef}
             type="file"

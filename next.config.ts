@@ -1,9 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   eslint: {
-    ignoreDuringBuilds: true, // ✅ disables ESLint errors during `next build`
+    ignoreDuringBuilds: true,
+  },
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.externals = [...(config.externals || []), {
+        canvas: 'commonjs canvas',
+      }];
+    }
+    return config;
   },
 };
 
