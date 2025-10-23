@@ -9,6 +9,8 @@ const IGNORE = new Set([
   'node_modules',
   '.next',
   '.vercel',
+  '.pdf',
+  '.docx'
 ]);
 
 const IGNORED_FILES = new Set([

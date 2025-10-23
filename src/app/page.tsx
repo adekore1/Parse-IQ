@@ -99,6 +99,43 @@ export default function Home() {
 
       {/* <section className="px-6 py-12">
 
+      </section>
+
+      {/* SUPPORTED FILE TYPES */}
+      <section className="text-center space-y-6">
+        <h2 className="text-3xl font-bold">SUPPORTED FILE TYPES</h2>
+        <div className="flex flex-wrap gap-3 justify-center max-w-[800px] mx-auto">
+          {[
+            { ext: ".ts", color: "text-blue-400" },
+            { ext: ".tsx", color: "text-blue-400" },
+            { ext: ".js", color: "text-yellow-400" },
+            { ext: ".jsx", color: "text-yellow-400" },
+            { ext: ".py", color: "text-green-400" },
+            { ext: ".java", color: "text-orange-400" },
+            { ext: ".go", color: "text-cyan-400" },
+            { ext: ".rs", color: "text-orange-500" },
+            { ext: ".cpp", color: "text-pink-400" },
+            { ext: ".c", color: "text-blue-500" },
+            { ext: ".cs", color: "text-purple-400" },
+            { ext: ".html", color: "text-red-400" },
+            { ext: ".css", color: "text-blue-300" },
+            { ext: ".json", color: "text-yellow-300" },
+            { ext: ".md", color: "text-white" },
+            { ext: ".yml", color: "text-cyan-300" },
+            { ext: ".sh", color: "text-green-300" },
+          ].map((file, i) => (
+            <span
+              key={i}
+              className={`${file.color} bg-[#2f2f33] px-3 py-1 rounded-lg text-sm font-mono`}
+            >
+              {file.ext}
+</span>
+          ))}
+        </div>
+        <p className="text-gray-400 text-sm">
+          Upload folders containing supported file types
+        </p>
+      </section>
 
       {/* FOOTER */}
       <footer className="bg-[#242424] text-white text-center px-4 py-8 mt-24">
