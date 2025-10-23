@@ -36,7 +36,6 @@
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20",
     "@types/pdf-parse": "^1.1.5",
-    "@types/pdfjs-dist": "^2.10.377",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.21",
